@@ -54,6 +54,16 @@ describe 'Haml magic translations with I18n' do
     HAML
   end
 
+  it 'should not translate evaluated tags' do
+    Haml::Template.options[:magic_translations] = true
+    I18n.locale = :pl
+    <<-HTML.strip_heredoc.should == render(<<-HAML.strip_heredoc)
+      <p>Magic translations works!</p>
+    HTML
+      %p= 'Magic translations works!'
+    HAML
+  end
+
   it 'should leave text without changes when :magic_translations option is off' do
     Haml::Template.options[:magic_translations] = false
     <<-'HTML'.strip_heredoc.should == render(<<-'HAML'.strip_heredoc)
