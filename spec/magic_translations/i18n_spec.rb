@@ -64,6 +64,37 @@ describe 'Haml magic translations with I18n' do
     HAML
   end
 
+  context 'when translating strings in Javascript' do
+    before(:each) do
+      Haml::Template.options[:magic_translations] = true
+      I18n.locale = :pl
+    end
+    it "should translate strings inside _('')" do
+      <<-'HTML'.strip_heredoc.should == render(<<-'HAML'.strip_heredoc)
+        <script type='text/javascript'>
+          //<![CDATA[
+            var text = "Magiczne t\u0142umaczenie dzia\u0142a!";
+          //]]>
+        </script>
+      HTML
+        :javascript
+          var text = _('Magic translations works!');
+      HAML
+    end
+    it 'should translate strings inside _("")' do
+      <<-'HTML'.strip_heredoc.should == render(<<-'HAML'.strip_heredoc)
+        <script type='text/javascript'>
+          //<![CDATA[
+            var text = "Magiczne t\u0142umaczenie dzia\u0142a!";
+          //]]>
+        </script>
+      HTML
+        :javascript
+          var text = _("Magic translations works!");
+      HAML
+    end
+  end
+
   it 'should leave text without changes when :magic_translations option is off' do
     Haml::Template.options[:magic_translations] = false
     <<-'HTML'.strip_heredoc.should == render(<<-'HAML'.strip_heredoc)

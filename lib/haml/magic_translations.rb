@@ -1,5 +1,6 @@
 require 'haml'
 require 'haml/template'
+require 'json'
 
 ##
 # This plugin provides "magical translations" in your .haml files. What does it
@@ -104,7 +105,20 @@ module Haml::MagicTranslations
         super
       end
     end
-    
+
+    def compile_filter
+      super unless magic_translations?
+
+      case @node.value[:name]
+        when 'javascript'
+          @node.value[:text].gsub!(/_\(('(([^']|\\')+)'|"(([^"]|\\")+)")\)/) do |m|
+            parsed_string = JSON.parse("[\"#{$1[1..-2]}\"]")[0]
+            "\#{_('#{parsed_string}').to_json}"
+          end
+      end
+      super
+    end
+
     # It discovers all fragments of code embeded in text and replacing with 
     # simple string interpolation parameters. 
     # 
