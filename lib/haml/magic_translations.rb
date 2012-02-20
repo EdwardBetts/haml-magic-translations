@@ -45,7 +45,48 @@ module Haml::MagicTranslations
     haml.send(:include, EngineMethods)
     Haml::Template.send(:extend, TemplateMethods)
   end
-  
+
+  # It discovers all fragments of code embeded in text and replacing with
+  # simple string interpolation parameters.
+  #
+  # ==== Example:
+  #
+  # Following line...
+  #
+  #   %p This is some #{'Interpolated'.upcase'} text
+  #
+  # ... will be translated to:
+  #
+  #   [ "This is some %s text", "['Interpolated'.upcase]" ]
+  #
+  def self.prepare_i18n_interpolation(str, escape_html = nil)
+    args = []
+    res  = ''
+    str = str.
+      gsub(/\n/, '\n').
+      gsub(/\r/, '\r').
+      gsub(/\#/, '\#').
+      gsub(/\"/, '\"').
+      gsub(/\\/, '\\\\')
+
+    rest = Haml::Shared.handle_interpolation '"' + str + '"' do |scan|
+      escapes = (scan[2].size - 1) / 2
+      res << scan.matched[0...-3 - escapes]
+      if escapes % 2 == 1
+        res << '#{'
+      else
+        content = eval('"' + Haml::Shared.balance(scan, ?{, ?}, 1)[0][0...-1] + '"')
+        content = "Haml::Helpers.html_escape(#{content.to_s})" if escape_html
+        args << content
+        res  << '%s'
+      end
+    end
+    value = res+rest.gsub(/\\(.)/, '\1').chomp
+    value = value[1..-2] unless value.to_s == ''
+    args  = "[#{args.join(', ')}]"
+    [value, args]
+  end
+
   module TemplateMethods
     def enable_magic_translations(backend = :i18n)
       case backend
@@ -83,7 +124,7 @@ module Haml::MagicTranslations
 
       if magic_translations?
         unless action && action != '!' || action == '!' && value[0] == '=' || value.empty?
-          value, interpolation_arguments = prepare_i18n_interpolation(value)
+          value, interpolation_arguments = Haml::MagicTranslations.prepare_i18n_interpolation(value)
           value = "\#{_('#{value.gsub(/'/, "\\\\'")}') % #{interpolation_arguments}\}\n"
         end
       end
@@ -98,7 +139,7 @@ module Haml::MagicTranslations
       end
 
       if magic_translations?
-        value, interpolation_arguments = prepare_i18n_interpolation(text, escape_html)
+        value, interpolation_arguments = Haml::MagicTranslations.prepare_i18n_interpolation(text, escape_html)
         value = "_('#{value.gsub(/'/, "\\\\'")}') % #{interpolation_arguments}\n"
         script(value, !:escape_html)
       else
@@ -122,47 +163,6 @@ END_OF_TRANSLATABLE_MARKDOWN
           end
       end
       super
-    end
-
-    # It discovers all fragments of code embeded in text and replacing with 
-    # simple string interpolation parameters. 
-    # 
-    # ==== Example: 
-    #
-    # Following line...
-    # 
-    #   %p This is some #{'Interpolated'.upcase'} text
-    #
-    # ... will be translated to:
-    #
-    #   [ "This is some %s text", "['Interpolated'.upcase]" ]
-    #
-    def prepare_i18n_interpolation(str, escape_html = nil)
-      args = []
-      res  = ''
-      str = str.
-        gsub(/\n/, '\n').
-        gsub(/\r/, '\r').
-        gsub(/\#/, '\#').
-        gsub(/\"/, '\"').
-        gsub(/\\/, '\\\\')
-        
-      rest = Haml::Shared.handle_interpolation '"' + str + '"' do |scan|
-        escapes = (scan[2].size - 1) / 2
-        res << scan.matched[0...-3 - escapes]
-        if escapes % 2 == 1
-          res << '#{'
-        else
-          content = eval('"' + balance(scan, ?{, ?}, 1)[0][0...-1] + '"')
-          content = "Haml::Helpers.html_escape(#{content.to_s})" if escape_html
-          args << content
-          res  << '%s'
-        end
-      end
-      value = res+rest.gsub(/\\(.)/, '\1').chomp
-      value = value[1..-2] unless value.to_s == ''
-      args  = "[#{args.join(', ')}]"
-      [value, args]
     end
   end
 end
