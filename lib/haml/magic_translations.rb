@@ -73,7 +73,7 @@ module Haml::MagicTranslations
     def parse_tag(line)
       tag_name, attributes, attributes_hashes, object_ref, nuke_outer_whitespace,
         nuke_inner_whitespace, action, value, last_line = super(line)
-      
+
       magic_translations = self.options[:magic_translations]
       magic_translations = Haml::Template.options[:magic_translations] if magic_translations.nil?
       
@@ -86,9 +86,9 @@ module Haml::MagicTranslations
       [tag_name, attributes, attributes_hashes, object_ref, nuke_outer_whitespace,
          nuke_inner_whitespace, action, value, last_line]
     end
-    
+
     # Magical translations will be also used for plain text. 
-    def push_plain(text, options = {})
+    def plain(text, escape_html = nil)
       if block_opened?
         raise SyntaxError.new("Illegal nesting: nesting within plain text is illegal.", @next_line.index)
       end
@@ -97,19 +97,11 @@ module Haml::MagicTranslations
       options[:magic_translations] = Haml::Template.options[:magic_translations] if options[:magic_translations].nil?
       
       if options[:magic_translations]
-        value, interpolation_arguments = prepare_i18n_interpolation(text, 
-          :escape_html => options[:escape_html])
+        value, interpolation_arguments = prepare_i18n_interpolation(text, :escape_html => escape_html)
         value = "_('#{value.gsub(/'/, "\\\\'")}') % #{interpolation_arguments}\n"
-        push_script(value, :escape_html => false)
+        script(value, !:escape_html)
       else
-        if contains_interpolation?(text)
-          options[:escape_html] = self.options[:escape_html] if options[:escape_html].nil?
-          push_script(
-            unescape_interpolation(text, :escape_html => options[:escape_html]),
-            :escape_html => false)
-        else
-          push_text text
-        end
+        super
       end
     end
     
