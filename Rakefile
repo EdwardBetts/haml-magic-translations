@@ -22,6 +22,7 @@ time with translations.
     gem.add_dependency "actionpack"
     gem.add_development_dependency "rspec", ">= 2"
     gem.add_development_dependency "rdoc", ">= 2.4.2"
+    gem.add_development_dependency "maruku"
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError

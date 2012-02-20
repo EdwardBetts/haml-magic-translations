@@ -110,6 +110,11 @@ module Haml::MagicTranslations
       super unless magic_translations?
 
       case @node.value[:name]
+        when 'markdown'
+          @node.value[:text] = "\#{_(<<-'END_OF_TRANSLATABLE_MARKDOWN'.rstrip
+#{@node.value[:text]}
+END_OF_TRANSLATABLE_MARKDOWN
+)}"
         when 'javascript'
           @node.value[:text].gsub!(/_\(('(([^']|\\')+)'|"(([^"]|\\")+)")\)/) do |m|
             parsed_string = JSON.parse("[\"#{$1[1..-2]}\"]")[0]
