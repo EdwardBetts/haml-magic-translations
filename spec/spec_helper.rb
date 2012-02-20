@@ -1,6 +1,6 @@
 ENV["RAILS_ENV"] = "test"
 require 'rubygems'
-require 'spec'
+require 'rspec'
 
 $:.unshift File.dirname(__FILE__)
 $:.unshift File.join(File.dirname(__FILE__), '../lib')

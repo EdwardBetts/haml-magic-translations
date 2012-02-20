@@ -19,29 +19,28 @@ time with translations.
     gem.homepage = "http://github.com/kriss/haml-magic-translations"
     gem.authors = ["Kriss Kowalik"]
     gem.add_development_dependency "haml", ">= 3.0.0"
+    gem.add_development_dependency "rspec", ">= 2"
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: gem install jeweler"
 end
 
-require 'spec/rake/spectask'
+require 'rspec/core/rake_task'
 require 'rake/rdoctask'
 
 desc 'Default: run specs.'
 task :default => :spec
 
 desc 'Run the specs'
-Spec::Rake::SpecTask.new(:spec) do |t|
-  t.spec_files = Dir['spec/**/*_spec.rb']
-  t.spec_opts  = %w(-fs --color)
+RSpec::Core::RakeTask.new(:spec) do |t|
+  t.rspec_opts  = %w(-fs --color)
 end
 
 namespace :spec do
   desc "Run all specs with RCov"
-  Spec::Rake::SpecTask.new(:rcov) do |t|
-    t.spec_opts = ['--colour --format progress --loadby mtime --reverse']
-    t.spec_files = FileList['spec/**/*_spec.rb']
+  RSpec::Core::RakeTask.new(:rcov) do |t|
+    t.rspec_opts = ['--colour --format progress --loadby mtime --reverse']
     t.rcov = true
     t.rcov_opts = ['--exclude', 'spec,/Users/']
   end
