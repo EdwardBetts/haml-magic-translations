@@ -20,6 +20,7 @@ time with translations.
     gem.authors = ["Kriss Kowalik"]
     gem.add_development_dependency "haml", ">= 3.0.0"
     gem.add_development_dependency "rspec", ">= 2"
+    gem.add_development_dependency "rdoc", ">= 2.4.2"
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
@@ -27,7 +28,7 @@ rescue LoadError
 end
 
 require 'rspec/core/rake_task'
-require 'rake/rdoctask'
+require 'rdoc/task'
 
 desc 'Default: run specs.'
 task :default => :spec
@@ -51,6 +52,6 @@ Rake::RDocTask.new(:rdoc) do |rdoc|
   rdoc.rdoc_dir = 'rdoc'
   rdoc.title    = 'SimpleNavigation'
   rdoc.options << '--line-numbers' << '--inline-source'
-  rdoc.rdoc_files.include('README')
-  rdoc.rdoc_files.include('lib/**/*.rb')
+  rdoc.main = "README.rdoc"
+  rdoc.rdoc_files.include("README.rdoc", "lib/**/*.rb")
 end
