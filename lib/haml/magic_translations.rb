@@ -1,5 +1,4 @@
 require 'haml'
-require 'haml/template'
 require 'json'
 
 ##
@@ -43,7 +42,9 @@ require 'json'
 module Haml::MagicTranslations
   def self.included(haml) # :nodoc:
     haml.send(:include, EngineMethods)
-    Haml::Template.send(:extend, TemplateMethods)
+    if defined? Haml::Template
+      Haml::Template.send(:extend, TemplateMethods)
+    end
   end
 
   # It discovers all fragments of code embeded in text and replacing with
@@ -87,37 +88,52 @@ module Haml::MagicTranslations
     [value, args]
   end
 
+  def self.enabled?
+    @enabled
+  end
+
+  def self.enable(backend = :i18n)
+    case backend
+    when :i18n
+      require 'i18n'
+      require 'i18n/backend/gettext'
+      require 'i18n/gettext/helpers'
+      I18n::Backend::Simple.send(:include, I18n::Backend::Gettext)
+      EngineMethods.magic_translations_helpers = I18n::Gettext::Helpers
+    when :gettext
+      require 'gettext'
+      EngineMethods.magic_translations_helpers = GetText
+    when :fast_gettext
+      require 'fast_gettext'
+      EngineMethods.magic_translations_helpers = FastGettext::Translation
+    else
+      @enabled = false
+      raise ArgumentError, "Backend #{backend.to_s} is not available in Haml::MagicTranslations"
+    end
+    @enabled = true
+  end
+
+  def self.disable
+    EngineMethods.magic_translations_helpers = nil
+    @enabled = false
+  end
+
   module TemplateMethods
+    # backward compatibility with versions < 0.3
     def enable_magic_translations(backend = :i18n)
-      case backend
-      when :i18n
-        require 'i18n'
-        require 'i18n/backend/gettext'
-        require 'i18n/gettext/helpers'
-        I18n::Backend::Simple.send(:include, I18n::Backend::Gettext)
-        EngineMethods.magic_translation_helpers = I18n::Gettext::Helpers
-      when :gettext
-        require 'gettext'
-        EngineMethods.magic_translation_helpers = GetText
-      when :fast_gettext
-        require 'fast_gettext'
-        EngineMethods.magic_translation_helpers = FastGettext::Translation
-      else
-        raise ArgumentError, "Backend #{which.to_s} is not available in Haml::MagicTranslations"
-      end
-      Haml::Template.options[:magic_translations] = true
+      Haml::MagicTranslations.enable backend
     end
   end
 
   module EngineMethods
     class << self
-      attr_accessor :magic_translation_helpers
+      attr_accessor :magic_translations_helpers
     end
 
     def magic_translations?
       return self.options[:magic_translations] unless self.options[:magic_translations].nil?
 
-      Haml::Template.options[:magic_translations]
+      Haml::MagicTranslations.enabled?
     end
 
     # Overriden function that parses Haml tags. Injects gettext call for all plain
@@ -171,7 +187,7 @@ END_OF_TRANSLATABLE_MARKDOWN
 
     def compile_root
       if magic_translations?
-        @precompiled << "extend #{EngineMethods.magic_translation_helpers};"
+        @precompiled << "extend #{EngineMethods.magic_translations_helpers};"
       end
       super
     end

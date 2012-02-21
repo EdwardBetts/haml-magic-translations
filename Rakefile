@@ -19,7 +19,9 @@ time with translations.
     gem.homepage = "http://github.com/kriss/haml-magic-translations"
     gem.authors = ["Kriss Kowalik"]
     gem.add_dependency "haml", ">= 3.1.0"
-    gem.add_dependency "actionpack"
+    gem.add_development_dependency "actionpack"
+    gem.add_development_dependency "gettext"
+    gem.add_development_dependency "fast_gettext"
     gem.add_development_dependency "rspec", ">= 2"
     gem.add_development_dependency "rdoc", ">= 2.4.2"
     gem.add_development_dependency "maruku"
