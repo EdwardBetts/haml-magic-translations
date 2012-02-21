@@ -97,7 +97,7 @@ module Haml::MagicTranslations
       options[:magic_translations] = Haml::Template.options[:magic_translations] if options[:magic_translations].nil?
       
       if options[:magic_translations]
-        value, interpolation_arguments = prepare_i18n_interpolation(text, :escape_html => escape_html)
+        value, interpolation_arguments = prepare_i18n_interpolation(text, escape_html)
         value = "_('#{value.gsub(/'/, "\\\\'")}') % #{interpolation_arguments}\n"
         script(value, !:escape_html)
       else
@@ -118,7 +118,7 @@ module Haml::MagicTranslations
     #
     #   [ "This is some %s text", "['Interpolated'.upcase]" ]
     #
-    def prepare_i18n_interpolation(str, opts = {})
+    def prepare_i18n_interpolation(str, escape_html = nil)
       args = []
       res  = ''
       str = str.
@@ -135,7 +135,7 @@ module Haml::MagicTranslations
           res << '#{'
         else
           content = eval('"' + balance(scan, ?{, ?}, 1)[0][0...-1] + '"')
-          content = "Haml::Helpers.html_escape(#{content.to_s})" if opts[:escape_html]
+          content = "Haml::Helpers.html_escape(#{content.to_s})" if escape_html
           args << content
           res  << '%s'
         end
