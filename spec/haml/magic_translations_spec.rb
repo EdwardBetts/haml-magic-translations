@@ -15,29 +15,35 @@ module Haml
       it 'should translate text using existing locales' do
         Haml::Template.options[:magic_translations] = true
         I18n.locale = :pl
-        <<-'HTML'.strip_heredoc.should == render(<<-'HAML'.strip_heredoc)
-          <p>Magiczne tłumaczenie działa!</p>
-          <p>A tutaj razem z interpolacją, a to wszystko dzięki połączeniu I18n i GetText</p>
-        HTML
+        render(<<-'HAML'.strip_heredoc).should == <<-'HTML'.strip_heredoc
           %p Magic translations works!
           %p Here with interpolation, and everything thanks to #{I18n.name} and #{GetText.name}
         HAML
+          <p>Magiczne tłumaczenie działa!</p>
+          <p>A tutaj razem z interpolacją, a to wszystko dzięki połączeniu I18n i GetText</p>
+        HTML
       end
 
       it 'should leave text without changes when translation is not available' do
         Haml::Template.options[:magic_translations] = true
         I18n.locale = :pl
-        <<-'HTML'.strip_heredoc.should == render(<<-'HAML'.strip_heredoc)
-          <p>Untranslated thanks to I18n and GetText</p>
-        HTML
+        render(<<-'HAML'.strip_heredoc).should == <<-'HTML'.strip_heredoc
           %p Untranslated thanks to #{I18n.name} and #{GetText.name}
         HAML
+          <p>Untranslated thanks to I18n and GetText</p>
+        HTML
       end
 
       it 'should translate text with multiline plain text' do
         Haml::Template.options[:magic_translations] = true
         I18n.locale = :pl
-        <<-'HTML'.strip_heredoc.should == render(<<-'HAML'.strip_heredoc)
+       render(<<-'HAML'.strip_heredoc).should == <<-'HTML'.strip_heredoc
+          %p Magic translations works!
+          %p
+            Now we will check multiline strings,
+            which should be also translated,
+            with interpolation #{'Interpolation'.upcase}
+        HAML
           <p>Magiczne tłumaczenie działa!</p>
           <p>
             Kolejny wieloliniowy tekst,
@@ -45,22 +51,16 @@ module Haml
             interpolacja INTERPOLATION też działa!
           </p>
         HTML
-          %p Magic translations works!
-          %p
-            Now we will check multiline strings,
-            which should be also translated,
-            with interpolation #{'Interpolation'.upcase}
-        HAML
       end
 
       it 'should not translate evaluated tags' do
         Haml::Template.options[:magic_translations] = true
         I18n.locale = :pl
-        <<-HTML.strip_heredoc.should == render(<<-HAML.strip_heredoc)
-          <p>Magic translations works!</p>
-        HTML
+        render(<<-HAML.strip_heredoc).should == <<-HTML.strip_heredoc
           %p= 'Magic translations works!'
         HAML
+          <p>Magic translations works!</p>
+        HTML
       end
 
       context 'when translating strings in Javascript' do
@@ -69,28 +69,28 @@ module Haml
           I18n.locale = :pl
         end
         it "should translate strings inside _('')" do
-          <<-'HTML'.strip_heredoc.should == render(<<-'HAML'.strip_heredoc)
-            <script type='text/javascript'>
-              //<![CDATA[
-                var text = "Magiczne t\u0142umaczenie dzia\u0142a!";
-              //]]>
-            </script>
-          HTML
+          render(<<-'HAML'.strip_heredoc).should == <<-'HTML'.strip_heredoc
             :javascript
               var text = _('Magic translations works!');
           HAML
-        end
-        it 'should translate strings inside _("")' do
-          <<-'HTML'.strip_heredoc.should == render(<<-'HAML'.strip_heredoc)
             <script type='text/javascript'>
               //<![CDATA[
                 var text = "Magiczne t\u0142umaczenie dzia\u0142a!";
               //]]>
             </script>
           HTML
+        end
+        it 'should translate strings inside _("")' do
+          render(<<-'HAML'.strip_heredoc).should == <<-'HTML'.strip_heredoc
             :javascript
               var text = _("Magic translations works!");
           HAML
+            <script type='text/javascript'>
+              //<![CDATA[
+                var text = "Magiczne t\u0142umaczenie dzia\u0142a!";
+              //]]>
+            </script>
+          HTML
         end
       end
 
@@ -100,12 +100,12 @@ module Haml
           I18n.locale = :pl
         end
         it "should translate strings inside _('')" do
-          <<-'HTML'.strip_heredoc.should == render(<<-'HAML'.strip_heredoc)
-            <p>Magiczne tłumaczenie działa!</p>
-          HTML
+          render(<<-'HAML'.strip_heredoc).should == <<-'HTML'.strip_heredoc
             :markdown
               Magic translations works!
           HAML
+            <p>Magiczne tłumaczenie działa!</p>
+          HTML
         end
       end
 
@@ -113,11 +113,11 @@ module Haml
         it 'should leave text untranslated' do
           Haml::Template.options[:magic_translations] = false
           I18n.locale = :pl
-          <<-'HTML'.strip_heredoc.should == render(<<-'HAML'.strip_heredoc)
-            <p>Magic translations works!</p>
-          HTML
+          render(<<-'HAML'.strip_heredoc).should == <<-'HTML'.strip_heredoc
             %p Magic translations works!
           HAML
+            <p>Magic translations works!</p>
+          HTML
         end
       end
     end
