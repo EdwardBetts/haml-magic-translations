@@ -95,21 +95,25 @@ module Haml::MagicTranslations
         require 'i18n/backend/gettext'
         require 'i18n/gettext/helpers'
         I18n::Backend::Simple.send(:include, I18n::Backend::Gettext)
-        Haml::Helpers.send(:include, I18n::Gettext::Helpers)
+        EngineMethods.magic_translation_helpers = I18n::Gettext::Helpers
       when :gettext
         require 'gettext'
-        Haml::Helpers.send(:include, GetText)      
+        EngineMethods.magic_translation_helpers = GetText
       when :fast_gettext
         require 'fast_gettext'
-        Haml::Helpers.send(:include, FastGettext::Translation)      
+        EngineMethods.magic_translation_helpers = FastGettext::Translation
       else
         raise ArgumentError, "Backend #{which.to_s} is not available in Haml::MagicTranslations"
       end
       Haml::Template.options[:magic_translations] = true
     end
   end
-  
+
   module EngineMethods
+    class << self
+      attr_accessor :magic_translation_helpers
+    end
+
     def magic_translations?
       return self.options[:magic_translations] unless self.options[:magic_translations].nil?
 
@@ -161,6 +165,13 @@ END_OF_TRANSLATABLE_MARKDOWN
             parsed_string = JSON.parse("[\"#{$1[1..-2]}\"]")[0]
             "\#{_('#{parsed_string}').to_json}"
           end
+      end
+      super
+    end
+
+    def compile_root
+      if magic_translations?
+        @precompiled << "extend #{EngineMethods.magic_translation_helpers};"
       end
       super
     end
