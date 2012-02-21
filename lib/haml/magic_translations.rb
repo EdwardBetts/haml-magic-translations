@@ -68,16 +68,19 @@ module Haml::MagicTranslations
   end
   
   module EngineMethods
+    def magic_translations?
+      return self.options[:magic_translations] unless self.options[:magic_translations].nil?
+
+      Haml::Template.options[:magic_translations]
+    end
+
     # Overriden function that parses Haml tags. Injects gettext call for all plain
     # text lines.
     def parse_tag(line)
       tag_name, attributes, attributes_hashes, object_ref, nuke_outer_whitespace,
         nuke_inner_whitespace, action, value, last_line = super(line)
 
-      magic_translations = self.options[:magic_translations]
-      magic_translations = Haml::Template.options[:magic_translations] if magic_translations.nil?
-      
-      if magic_translations
+      if magic_translations?
         unless action && action != '!' || action == '!' && value[0] == '=' || value.empty?
           value, interpolation_arguments = prepare_i18n_interpolation(value)
           value = "\#{_('#{value.gsub(/'/, "\\\\'")}') % #{interpolation_arguments}\}\n"
@@ -93,10 +96,7 @@ module Haml::MagicTranslations
         raise SyntaxError.new("Illegal nesting: nesting within plain text is illegal.", @next_line.index)
       end
 
-      options[:magic_translations] = self.options[:magic_translations] if options[:magic_translations].nil?
-      options[:magic_translations] = Haml::Template.options[:magic_translations] if options[:magic_translations].nil?
-      
-      if options[:magic_translations]
+      if magic_translations?
         value, interpolation_arguments = prepare_i18n_interpolation(text, escape_html)
         value = "_('#{value.gsub(/'/, "\\\\'")}') % #{interpolation_arguments}\n"
         script(value, !:escape_html)
