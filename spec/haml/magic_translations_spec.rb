@@ -109,13 +109,16 @@ module Haml
         end
       end
 
-      it 'should leave text without changes when :magic_translations option is off' do
-        Haml::Template.options[:magic_translations] = false
-        <<-'HTML'.strip_heredoc.should == render(<<-'HAML'.strip_heredoc)
-          <p>Text without changes</p>
-        HTML
-          %p Text without changes
-        HAML
+      context 'when disabling magic translations' do
+        it 'should leave text untranslated' do
+          Haml::Template.options[:magic_translations] = false
+          I18n.locale = :pl
+          <<-'HTML'.strip_heredoc.should == render(<<-'HAML'.strip_heredoc)
+            <p>Magic translations works!</p>
+          HTML
+            %p Magic translations works!
+          HAML
+        end
       end
     end
   end
