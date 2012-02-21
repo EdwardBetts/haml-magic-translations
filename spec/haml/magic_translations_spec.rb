@@ -24,17 +24,13 @@ module Haml
         HAML
       end
 
-      it 'should leave text without changes when translation was not found' do
+      it 'should leave text without changes when translation is not available' do
         Haml::Template.options[:magic_translations] = true
-        I18n.locale = :en
+        I18n.locale = :pl
         <<-'HTML'.strip_heredoc.should == render(<<-'HAML'.strip_heredoc)
-          <p>Magic translations works!</p>
-          <p>And this one does not exist</p>
-          <p>Here with interpolation, and everything thanks to I18n and GetText</p>
+          <p>Untranslated thanks to I18n and GetText</p>
         HTML
-          %p Magic translations works!
-          %p And this one does not exist
-          %p Here with interpolation, and everything thanks to #{I18n.name} and #{GetText.name}
+          %p Untranslated thanks to #{I18n.name} and #{GetText.name}
         HAML
       end
 
