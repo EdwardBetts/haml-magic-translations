@@ -2,19 +2,26 @@ require 'json'
 require 'haml'
 require 'haml/magic_translations'
 
-module Haml::MagicTranslations::RGetText
+module Haml::MagicTranslations::RGetText # :nodoc:
+  # RGetText parser for Haml files
+  #
+  # === Example
+  #
+  #   GetText::RGetText.add_parser(Haml::MagicTranslations::RGetText::HamlParser)
+  #   GetText.update_pofiles(text_domain, files, app_version, options)
+  #
   module HamlParser
     module_function
 
-    def target?(file)
+    def target?(file) # :nodoc:
       File.extname(file) == '.haml'
     end
 
-    def parse(file, ary = [])
+    def parse(file, ary = []) # :nodoc:
       Parser.new(file).parse
     end
 
-    class Parser
+    class Parser # :nodoc:all
       attr_reader :file
       attr_reader :content
       def initialize(file)
@@ -36,7 +43,7 @@ module Haml::MagicTranslations::RGetText
       end
     end
 
-    module RGetTextEngine
+    module RGetTextEngine # :nodoc:all
       def add_target(text, lineno = @node.line)
         @targets = {} if @targets.nil?
         unless text.empty?

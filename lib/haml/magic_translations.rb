@@ -92,6 +92,14 @@ module Haml::MagicTranslations
     @enabled
   end
 
+  # Enable magic translations using the given backend
+  #
+  # Supported backends:
+  #
+  # +:i18n+:: Use I18n::Backend::GetText and I18n::GetText::Helpers
+  #           from the 'i18n'
+  # +:gettext+:: Use GetText from 'gettext'
+  # +:fast_gettext+:: Use FastGettext::Translation from 'fast_gettext'
   def self.enable(backend = :i18n)
     case backend
     when :i18n
@@ -113,19 +121,20 @@ module Haml::MagicTranslations
     @enabled = true
   end
 
+  # Disable magic translations
   def self.disable
     EngineMethods.magic_translations_helpers = nil
     @enabled = false
   end
 
-  module TemplateMethods
+  module TemplateMethods # :nodoc:all
     # backward compatibility with versions < 0.3
     def enable_magic_translations(backend = :i18n)
       Haml::MagicTranslations.enable backend
     end
   end
 
-  module EngineMethods
+  module EngineMethods # :nodoc:all
     class << self
       attr_accessor :magic_translations_helpers
     end
@@ -152,7 +161,7 @@ module Haml::MagicTranslations
          nuke_inner_whitespace, action, value, last_line]
     end
 
-    # Magical translations will be also used for plain text. 
+    # Magical translations will be also used for plain text.
     def plain(text, escape_html = nil)
       if block_opened?
         raise SyntaxError.new("Illegal nesting: nesting within plain text is illegal.", @next_line.index)

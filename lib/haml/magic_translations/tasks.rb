@@ -6,19 +6,51 @@ require 'gettext/tools/rgettext'
 
 require 'haml/magic_translations/rgettext/haml_parser'
 
-module Haml::MagicTranslations::Tasks
+module Haml::MagicTranslations::Tasks # :nodoc:
+  # Rake task to generate and update PO files for a project using
+  # Haml::MagicTranslations
+  #
+  # === Example
+  #
+  # Rakefile excerpt:
+  #
+  #   Haml::MagicTranslations::Tasks::UpdatePoFiles.new do |t|
+  #     t.text_domain = 'my_project'
+  #     t.files = Dir.glob("views/**/*.{rb,haml}") << "lib/my_project.rb"
+  #     t.app_version = 'my_project 0.1'
+  #   end
+  #
+  # Updating PO files in the ++po++ directory will be done by issuing:
+  #
+  #   rake update_pofiles
+  #
   class UpdatePoFiles < ::Rake::TaskLib
+    # The name of the task
     attr_accessor :name
 
-    # See http://rubydoc.info/gems/gettext/2.1.0/GetText#update_pofiles-instance_method
-    # for details
-
+    # the textdomain name (see GetText.update_pofiles)
     attr_accessor :text_domain
+
+    # an Array of target files, that should be parsed for messages
     attr_accessor :files
+
+    # the application information which appears "Project-Id-Version: #app_version" in the pot/po-files
     attr_accessor :app_version
+
+    # update files only for one language - the language specified by this option
     attr_accessor :lang
+
+    # the root directory of po-files
     attr_accessor :po_root
+
+    # an array with the options, passed through to the gnu msgmerge tool
+    #
+    # Symbols are automatically translated to options with dashes,
+    # example: ++[:no_wrap, :no_fuzzy_matching, :sort_output]++ translated to
+    # ++--no-fuzzy-matching --sort-output++.
     attr_accessor :msgmerge
+
+    # true to show verbose messages. default is false
     attr_accessor :verbose
 
     def initialize(name = :update_pofiles)
