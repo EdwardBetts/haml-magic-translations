@@ -142,8 +142,8 @@ module Haml::MagicTranslations
       tag_name, attributes, attributes_hashes, object_ref, nuke_outer_whitespace,
         nuke_inner_whitespace, action, value, last_line = super(line)
 
-      if magic_translations?
-        unless action && action != '!' || action == '!' && value[0] == '=' || value.empty?
+      if magic_translations? && !value.empty?
+        unless action && action == '=' || action == '!' && value[0] == ?= || action == '&' && value[0] == ?=
           value, interpolation_arguments = Haml::MagicTranslations.prepare_i18n_interpolation(value)
           value = "\#{_('#{value.gsub(/'/, "\\\\'")}') % #{interpolation_arguments}\}\n"
         end

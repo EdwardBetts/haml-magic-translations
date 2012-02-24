@@ -78,9 +78,41 @@ module Haml
         HTML
       end
 
+      it 'should translate escaped tags' do
+        render(<<-HAML.strip_heredoc).should == <<-HTML.strip_heredoc
+          %p& Magic translations works!
+        HAML
+          <p>Magiczne tłumaczenie działa!</p>
+        HTML
+      end
+
+      it 'should translate unescaped tags' do
+        render(<<-HAML.strip_heredoc).should == <<-HTML.strip_heredoc
+          %p! Magic translations works!
+        HAML
+          <p>Magiczne tłumaczenie działa!</p>
+        HTML
+      end
+
       it 'should not translate evaluated tags' do
         render(<<-HAML.strip_heredoc).should == <<-HTML.strip_heredoc
           %p= 'Magic translations works!'
+        HAML
+          <p>Magic translations works!</p>
+        HTML
+      end
+
+      it 'should not translate escaped evaluated tags' do
+        render(<<-HAML.strip_heredoc).should == <<-HTML.strip_heredoc
+          %p&= 'Magic translations works!'
+        HAML
+          <p>Magic translations works!</p>
+        HTML
+      end
+
+      it 'should not translate unescaped evaluated tags' do
+        render(<<-HAML.strip_heredoc).should == <<-HTML.strip_heredoc
+          %p!= 'Magic translations works!'
         HAML
           <p>Magic translations works!</p>
         HTML
