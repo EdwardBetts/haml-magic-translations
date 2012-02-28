@@ -163,10 +163,6 @@ module Haml::MagicTranslations
 
     # Magical translations will be also used for plain text.
     def plain(text, escape_html = nil)
-      if block_opened?
-        raise SyntaxError.new("Illegal nesting: nesting within plain text is illegal.", @next_line.index)
-      end
-
       if magic_translations?
         value, interpolation_arguments = Haml::MagicTranslations.prepare_i18n_interpolation(text, escape_html)
         value = "_('#{value.gsub(/'/, "\\\\'")}') % #{interpolation_arguments}\n"
