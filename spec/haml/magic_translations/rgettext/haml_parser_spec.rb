@@ -1,3 +1,5 @@
+# -*- coding: UTF-8 -*-
+
 require 'spec_helper'
 require 'haml/magic_translations/rgettext/haml_parser'
 

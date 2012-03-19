@@ -1,3 +1,5 @@
+# -*- coding: UTF-8 -*-
+
 require 'rake'
 require 'rake/tasklib'
 require 'gettext'

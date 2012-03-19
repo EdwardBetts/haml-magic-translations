@@ -1,3 +1,5 @@
+# -*- coding: UTF-8 -*-
+
 ENV["RAILS_ENV"] = "test"
 require 'rubygems'
 require 'rspec'

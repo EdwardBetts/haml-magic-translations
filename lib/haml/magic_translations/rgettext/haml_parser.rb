@@ -1,3 +1,5 @@
+# -*- coding: UTF-8 -*-
+
 require 'json'
 require 'haml'
 require 'haml/magic_translations'

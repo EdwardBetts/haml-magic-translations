@@ -1,7 +1,17 @@
+# -*- coding: UTF-8 -*-
+
 require 'spec_helper'
-require 'active_support/core_ext/string'
 require 'tmpdir'
 require 'gettext/tools'
+
+# Stolen from ActiveSupport. We have to cut and paste it here so it
+# does not turn the encoding back to US-ASCII. Strange issue.
+class String
+  def strip_heredoc
+    indent = scan(/^[ \t]*(?=\S)/).min.try(:size) || 0
+    gsub(/^[ \t]{#{indent}}/, '')
+  end
+end
 
 module Haml
   describe MagicTranslations do
@@ -126,7 +136,7 @@ module Haml
           HAML
             <script type='text/javascript'>
               //<![CDATA[
-                var text = "Magiczne t\u0142umaczenie dzia\u0142a!";
+                var text = "Magiczne tłumaczenie działa!";
               //]]>
             </script>
           HTML
@@ -138,7 +148,7 @@ module Haml
           HAML
             <script type='text/javascript'>
               //<![CDATA[
-                var text = "Magiczne t\u0142umaczenie dzia\u0142a!";
+                var text = "Magiczne tłumaczenie działa!";
               //]]>
             </script>
           HTML
@@ -172,7 +182,7 @@ module Haml
       before(:each) do
         Haml::MagicTranslations.enable :i18n
         I18n.locale = :pl
-        I18n.load_path += Dir[File.join(File.dirname(__FILE__), "../locales/*.{po}")]
+        I18n.load_path += Dir[File.join(File.dirname(__FILE__), "../locales/*.po")]
       end
       it_should_behave_like 'Haml magic translations'
     end
