@@ -180,7 +180,7 @@ module Haml::MagicTranslations
       case @node.value[:name]
         when 'markdown'
           @node.value[:text] = "\#{_(<<-'END_OF_TRANSLATABLE_MARKDOWN'.rstrip
-#{@node.value[:text]}
+#{@node.value[:text].rstrip.gsub(/\n/, '\n')}
 END_OF_TRANSLATABLE_MARKDOWN
 )}"
         when 'javascript'

@@ -130,7 +130,7 @@ module Haml::MagicTranslations::RGetText # :nodoc:
 
         case @node.value[:name]
         when 'markdown'
-          add_target(@node.value[:text])
+          add_target(@node.value[:text].rstrip.gsub(/\n/, '\n'))
         when 'javascript'
           lineno = 0
           @node.value[:text].split(/\r\n|\r|\n/).each do |line|

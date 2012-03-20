@@ -192,7 +192,7 @@ module Haml::MagicTranslations::RGetText
             HAML
           end
           it 'should properly add it to translations' do
-             should == [["First paragraph\n\nSecond paragraph\n", '(haml):1']]
+             should == [["First paragraph\\n\\nSecond paragraph", '(haml):1']]
           end
         end
         context 'after extracting translations' do

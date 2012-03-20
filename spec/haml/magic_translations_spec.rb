@@ -159,9 +159,10 @@ module Haml
         it "should translate strings inside _('')" do
           render(<<-'HAML'.strip_heredoc).should == <<-'HTML'.strip_heredoc
             :markdown
-              Magic translations works!
+              Now we will check multiline strings,
+              which should be also translated.
           HAML
-            <p>Magiczne tłumaczenie działa!</p>
+            <p>Kolejny wieloliniowy tekst, który powinien zostać przetłumaczony.</p>
           HTML
         end
       end
