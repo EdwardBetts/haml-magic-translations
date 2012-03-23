@@ -15,9 +15,9 @@ find all phrases to translate and generate .po files for it. This type of files
 are also more readable and easier to translate, thanks to it you save your 
 time with translations.
     DESCR
-    gem.email = "kriss.kowalik@gmail.com"
-    gem.homepage = "http://github.com/kriss/haml-magic-translations"
-    gem.authors = ["Kriss Kowalik"]
+    gem.email = "jardiniers@potager.org"
+    gem.homepage = "http://github.com/potager/haml-magic-translations"
+    gem.authors = ["Kriss Kowalik", "potager.org"]
     gem.add_dependency "haml", ">= 3.1.0"
     gem.add_development_dependency "actionpack"
     gem.add_development_dependency "gettext"
