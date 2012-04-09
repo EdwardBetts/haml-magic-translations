@@ -186,6 +186,7 @@ END_OF_TRANSLATABLE_MARKDOWN
         when 'javascript'
           @node.value[:text].gsub!(/_\(('(([^']|\\')+)'|"(([^"]|\\")+)")\)/) do |m|
             parsed_string = JSON.parse("[\"#{$1[1..-2]}\"]")[0]
+            parsed_string.gsub!(/'/, "\\\\'")
             "\#{_('#{parsed_string}').to_json}"
           end
       end

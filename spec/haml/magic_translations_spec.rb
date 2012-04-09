@@ -153,6 +153,18 @@ module Haml
             </script>
           HTML
         end
+        it 'should not choke on single-quote' do
+          render(<<-'HAML'.strip_heredoc).should == <<-'HTML'.strip_heredoc
+            :javascript
+              var text = _("Don't you think?");
+          HAML
+            <script type='text/javascript'>
+              //<![CDATA[
+                var text = "Don't you think?";
+              //]]>
+            </script>
+          HTML
+        end
       end
 
       context 'when translating strings in Markdown' do
