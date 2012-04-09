@@ -185,7 +185,8 @@ END_OF_TRANSLATABLE_MARKDOWN
 )}"
         when 'javascript'
           @node.value[:text].gsub!(/_\(('(([^']|\\')+)'|"(([^"]|\\")+)")\)/) do |m|
-            parsed_string = JSON.parse("[\"#{$1[1..-2]}\"]")[0]
+            to_parse = $1[1..-2].gsub(/"/, '\"')
+            parsed_string = JSON.parse("[\"#{to_parse}\"]")[0]
             parsed_string.gsub!(/'/, "\\\\'")
             "\#{_('#{parsed_string}').to_json}"
           end

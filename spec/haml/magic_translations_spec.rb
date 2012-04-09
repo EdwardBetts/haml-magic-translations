@@ -165,6 +165,18 @@ module Haml
             </script>
           HTML
         end
+        it 'should not choke on double-quote' do
+          render(<<-'HAML'.strip_heredoc).should == <<-'HTML'.strip_heredoc
+            :javascript
+              var text = _('One "quote" here');
+          HAML
+            <script type='text/javascript'>
+              //<![CDATA[
+                var text = "One \"quote\" here";
+              //]]>
+            </script>
+          HTML
+        end
       end
 
       context 'when translating strings in Markdown' do
