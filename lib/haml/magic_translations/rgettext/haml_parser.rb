@@ -129,7 +129,7 @@ module Haml::MagicTranslations::RGetText # :nodoc:
         return super unless self.options[:rgettext]
 
         case @node.value[:name]
-        when 'markdown'
+        when 'markdown', 'maruku'
           add_target(@node.value[:text].rstrip.gsub(/\n/, '\n'))
         when 'javascript'
           lineno = 0

@@ -178,7 +178,7 @@ module Haml::MagicTranslations
       super unless magic_translations?
 
       case @node.value[:name]
-        when 'markdown'
+        when 'markdown', 'maruku'
           @node.value[:text] = "\#{_(<<-'END_OF_TRANSLATABLE_MARKDOWN'.rstrip
 #{@node.value[:text].rstrip.gsub(/\n/, '\n')}
 END_OF_TRANSLATABLE_MARKDOWN
