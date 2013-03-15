@@ -136,7 +136,7 @@ module Haml
           HAML
             <script type='text/javascript'>
               //<![CDATA[
-                var text = "Magiczne tłumaczenie działa!";
+                var text = "Magiczne t\u0142umaczenie dzia\u0142a!";
               //]]>
             </script>
           HTML
@@ -148,7 +148,7 @@ module Haml
           HAML
             <script type='text/javascript'>
               //<![CDATA[
-                var text = "Magiczne tłumaczenie działa!";
+                var text = "Magiczne t\u0142umaczenie dzia\u0142a!";
               //]]>
             </script>
           HTML
