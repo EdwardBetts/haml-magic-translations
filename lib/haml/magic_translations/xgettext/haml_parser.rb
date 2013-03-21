@@ -19,7 +19,7 @@ module Haml::MagicTranslations::XGetText # :nodoc:
       File.extname(file) == '.haml'
     end
 
-    def parse(file, ary = []) # :nodoc:
+    def parse(file) # :nodoc:
       Parser.new(file).parse
     end
 
