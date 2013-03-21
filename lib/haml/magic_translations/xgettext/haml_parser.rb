@@ -130,7 +130,7 @@ module Haml::MagicTranslations::XGetText # :nodoc:
 
         case @node.value[:name]
         when 'markdown', 'maruku'
-          add_target(@node.value[:text].rstrip.gsub(/\n/, '\n'))
+          add_target(@node.value[:text].rstrip)
         when 'javascript'
           lineno = 0
           @node.value[:text].split(/\r\n|\r|\n/).each do |line|
