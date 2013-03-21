@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{haml-magic-translations}
-  s.version = "0.4.0"
+  s.version = "0.5.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kriss Kowalik", "potager.org"]
-  s.date = %q{2013-03-15}
+  s.date = %q{2013-03-21}
   s.description = %q{This plugin provides "magical translations" in your .haml files. What does it
 mean? It's mean that all your raw texts in templates will be automatically
 translated by GetText, FastGettext or Gettext backend from I18n. No more 
@@ -33,10 +33,10 @@ time with translations.
     "init.rb",
     "lib/haml-magic-translations.rb",
     "lib/haml/magic_translations.rb",
-    "lib/haml/magic_translations/rgettext/haml_parser.rb",
     "lib/haml/magic_translations/tasks.rb",
-    "spec/haml/magic_translations/rgettext/haml_parser_spec.rb",
+    "lib/haml/magic_translations/xgettext/haml_parser.rb",
     "spec/haml/magic_translations/tasks_spec.rb",
+    "spec/haml/magic_translations/xgettext/haml_parser_spec.rb",
     "spec/haml/magic_translations_spec.rb",
     "spec/locales/en.po",
     "spec/locales/pl.po",
@@ -44,17 +44,16 @@ time with translations.
   ]
   s.homepage = %q{http://github.com/potager/haml-magic-translations}
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.7}
+  s.rubygems_version = %q{1.8.23}
   s.summary = %q{Provides automaticaly translations in haml templates}
 
   if s.respond_to? :specification_version then
-    current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<haml>, ["~> 3.1"])
       s.add_development_dependency(%q<actionpack>, [">= 0"])
-      s.add_development_dependency(%q<gettext>, [">= 0"])
+      s.add_development_dependency(%q<gettext>, [">= 2.3"])
       s.add_development_dependency(%q<fast_gettext>, [">= 0"])
       s.add_development_dependency(%q<rspec>, [">= 2"])
       s.add_development_dependency(%q<rdoc>, [">= 2.4.2"])
@@ -62,7 +61,7 @@ time with translations.
     else
       s.add_dependency(%q<haml>, ["~> 3.1"])
       s.add_dependency(%q<actionpack>, [">= 0"])
-      s.add_dependency(%q<gettext>, [">= 0"])
+      s.add_dependency(%q<gettext>, [">= 2.3"])
       s.add_dependency(%q<fast_gettext>, [">= 0"])
       s.add_dependency(%q<rspec>, [">= 2"])
       s.add_dependency(%q<rdoc>, [">= 2.4.2"])
@@ -71,7 +70,7 @@ time with translations.
   else
     s.add_dependency(%q<haml>, ["~> 3.1"])
     s.add_dependency(%q<actionpack>, [">= 0"])
-    s.add_dependency(%q<gettext>, [">= 0"])
+    s.add_dependency(%q<gettext>, [">= 2.3"])
     s.add_dependency(%q<fast_gettext>, [">= 0"])
     s.add_dependency(%q<rspec>, [">= 2"])
     s.add_dependency(%q<rdoc>, [">= 2.4.2"])
