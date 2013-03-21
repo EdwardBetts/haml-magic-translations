@@ -221,7 +221,7 @@ module Haml
             lang = File.basename(src).gsub(/\.po$/, '')
             dest = File.join(tmpdir, lang, 'LC_MESSAGES', 'test.mo')
             FileUtils.mkdir_p(File.dirname(dest))
-            GetText.rmsgfmt(src, dest)
+            GetText::Tools::MsgFmt.run(src, '-o', dest)
           end
           Haml::MagicTranslations.enable :gettext
           GetText.bindtextdomain 'test', :path => tmpdir

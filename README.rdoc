@@ -82,8 +82,9 @@ translate.
 === Extracting strings and merging translations
 
 In order to extract translatable strings and merge with existing translation,
-this gem provides an Haml parser for RGetText. You can either use it directly
-or through the provided Rake task. Here's an example on how to use the later:
+this gem provides an Haml parser for GetText::Tools::XGetText. You can either
+use it directly or through the provided Rake task. Here's an example on how to
+use the later:
 
   Haml::MagicTranslations::Tasks::UpdatePoFiles.new do |t|
     t.text_domain = 'my_project'

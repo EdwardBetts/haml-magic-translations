@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 require 'haml/magic_translations/tasks'
-require 'gettext/tools/rgettext'
+require 'gettext/tools/xgettext'
 
 module Haml::MagicTranslations::Tasks
   describe UpdatePoFiles do
@@ -65,9 +65,9 @@ module Haml::MagicTranslations::Tasks
           task.text_domain, task.files, task.app_version, {})
         run
       end
-      it 'should add a parser for ".haml" files to RGetText' do
+      it 'should add a parser for ".haml" files to XGetText' do
         GetText.stub!(:update_pofiles)
-        GetText::RGetText.should_receive(:add_parser) do |haml_parser|
+        GetText::Tools::XGetText.should_receive(:add_parser) do |haml_parser|
           haml_parser.should respond_to(:parse)
           haml_parser.should be_a_target('example.haml')
         end

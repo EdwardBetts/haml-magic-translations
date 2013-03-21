@@ -1,9 +1,9 @@
 # -*- coding: UTF-8 -*-
 
 require 'spec_helper'
-require 'haml/magic_translations/rgettext/haml_parser'
+require 'haml/magic_translations/xgettext/haml_parser'
 
-module Haml::MagicTranslations::RGetText
+module Haml::MagicTranslations::XGetText
   describe HamlParser do
     describe '.target?' do
       subject { HamlParser }

@@ -4,9 +4,9 @@ require 'rake'
 require 'rake/tasklib'
 require 'gettext'
 require 'gettext/tools'
-require 'gettext/tools/rgettext'
+require 'gettext/tools/xgettext'
 
-require 'haml/magic_translations/rgettext/haml_parser'
+require 'haml/magic_translations/xgettext/haml_parser'
 
 module Haml::MagicTranslations::Tasks # :nodoc:
   # Rake task to generate and update PO files for a project using
@@ -75,7 +75,7 @@ module Haml::MagicTranslations::Tasks # :nodoc:
         [ :lang, :po_root, :verbose ].each do |opt|
           options[opt] = send(opt) if send(opt)
         end
-        GetText::RGetText.add_parser(Haml::MagicTranslations::RGetText::HamlParser)
+        GetText::Tools::XGetText.add_parser(Haml::MagicTranslations::XGetText::HamlParser)
         GetText.update_pofiles(text_domain, files, app_version, options)
       end
     end

@@ -20,7 +20,7 @@ time with translations.
     gem.authors = ["Kriss Kowalik", "potager.org"]
     gem.add_dependency "haml", "~> 3.1"
     gem.add_development_dependency "actionpack"
-    gem.add_development_dependency "gettext"
+    gem.add_development_dependency "gettext", ">= 2.3"
     gem.add_development_dependency "fast_gettext"
     gem.add_development_dependency "rspec", ">= 2"
     gem.add_development_dependency "rdoc", ">= 2.4.2"

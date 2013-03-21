@@ -4,12 +4,12 @@ require 'json'
 require 'haml'
 require 'haml/magic_translations'
 
-module Haml::MagicTranslations::RGetText # :nodoc:
-  # RGetText parser for Haml files
+module Haml::MagicTranslations::XGetText # :nodoc:
+  # XGetText parser for Haml files
   #
   # === Example
   #
-  #   GetText::RGetText.add_parser(Haml::MagicTranslations::RGetText::HamlParser)
+  #   GetText::Tools::XGetText.add_parser(Haml::MagicTranslations::XGetText::HamlParser)
   #   GetText.update_pofiles(text_domain, files, app_version, options)
   #
   module HamlParser
@@ -37,15 +37,15 @@ module Haml::MagicTranslations::RGetText # :nodoc:
       end
 
       def parse
-        Haml::Engine.send(:include, RGetTextEngine)
+        Haml::Engine.send(:include, XGetTextEngine)
         engine = Haml::Engine.new(
             content, :filename => @file,
-                     :rgettext => true,
+                     :xgettext => true,
                      :magic_translations => false).targets
       end
     end
 
-    module RGetTextEngine # :nodoc:all
+    module XGetTextEngine # :nodoc:all
       def add_target(text, lineno = @node.line)
         @targets = {} if @targets.nil?
         unless text.empty?
@@ -71,7 +71,7 @@ module Haml::MagicTranslations::RGetText # :nodoc:
       #
       # So let's hook in the parser, just for this specific case.
       def parse_tag(line)
-        return super unless self.options[:rgettext]
+        return super unless self.options[:xgettext]
 
         tag_name, attributes, attributes_hashes, object_ref, nuke_outer_whitespace,
           nuke_inner_whitespace, action, value, last_line = super(line)
@@ -91,29 +91,29 @@ module Haml::MagicTranslations::RGetText # :nodoc:
       end
 
       def compile_plain
-        return super unless self.options[:rgettext]
+        return super unless self.options[:xgettext]
 
         add_target(@node.value[:text])
       end
 
       def compile_doctype
-        return super unless self.options[:rgettext]
+        return super unless self.options[:xgettext]
       end
 
       def compile_script
-        return super unless self.options[:rgettext]
+        return super unless self.options[:xgettext]
 
         yield if block_given?
       end
 
       def compile_silent_script
-        return super unless self.options[:rgettext]
+        return super unless self.options[:xgettext]
 
         yield if block_given?
       end
 
       def compile_tag
-        return super unless self.options[:rgettext]
+        return super unless self.options[:xgettext]
 
         # handle explicit translations in attributes
         @node.value[:attributes_hashes].each do |hash_string|
@@ -126,7 +126,7 @@ module Haml::MagicTranslations::RGetText # :nodoc:
       end
 
       def compile_filter
-        return super unless self.options[:rgettext]
+        return super unless self.options[:xgettext]
 
         case @node.value[:name]
         when 'markdown', 'maruku'
