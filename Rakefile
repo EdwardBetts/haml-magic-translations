@@ -16,7 +16,7 @@ are also more readable and easier to translate, thanks to it you save your
 time with translations.
     DESCR
     gem.email = "jardiniers@potager.org"
-    gem.homepage = "http://github.com/potager/haml-magic-translations"
+    gem.homepage = "https://github.com/potager/haml-magic-translations"
     gem.authors = ["Kriss Kowalik", "potager.org"]
     gem.add_dependency "haml", "~> 3.1"
     gem.add_development_dependency "actionpack"
