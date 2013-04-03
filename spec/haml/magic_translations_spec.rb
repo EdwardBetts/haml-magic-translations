@@ -11,6 +11,10 @@ class String
     indent = scan(/^[ \t]*(?=\S)/).min.try(:size) || 0
     gsub(/^[ \t]{#{indent}}/, '')
   end
+
+  def translate_unicode
+    gsub(/\\u([0-9a-z]{4})/) {|s| [$1.to_i(16)].pack("U")}
+  end
 end
 
 module Haml
@@ -130,7 +134,7 @@ module Haml
 
       context 'when translating strings in Javascript' do
         it "should translate strings inside _('')" do
-          render(<<-'HAML'.strip_heredoc).should == <<-'HTML'.strip_heredoc
+          render(<<-'HAML'.strip_heredoc).translate_unicode.should == <<-'HTML'.strip_heredoc.translate_unicode
             :javascript
               var text = _('Magic translations works!');
           HAML
@@ -142,7 +146,7 @@ module Haml
           HTML
         end
         it 'should translate strings inside _("")' do
-          render(<<-'HAML'.strip_heredoc).should == <<-'HTML'.strip_heredoc
+          render(<<-'HAML'.strip_heredoc).translate_unicode.should == <<-'HTML'.strip_heredoc.translate_unicode
             :javascript
               var text = _("Magic translations works!");
           HAML
