@@ -132,7 +132,7 @@ module Haml
         HTML
       end
 
-      context 'when translating strings in Javascript' do
+      context 'when translating strings in JavaScript' do
         it "should translate strings inside _('')" do
           render(<<-'HAML'.strip_heredoc).translate_unicode.should == <<-'HTML'.strip_heredoc.translate_unicode
             :javascript

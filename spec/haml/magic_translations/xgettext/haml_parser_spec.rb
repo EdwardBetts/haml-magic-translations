@@ -161,7 +161,7 @@ module Haml::MagicTranslations::XGetText
             should == [['Hello %s! Welcome to %s.', '(haml):1']]
           end
         end
-        context 'for translatable strings in Javascript' do
+        context 'for translatable strings in JavaScript' do
           let(:template) do <<-HAML.strip_heredoc
             :javascript
               var lines = [ _('First line'),
@@ -173,7 +173,7 @@ module Haml::MagicTranslations::XGetText
                        ['Second line', '(haml):3']]
           end
         end
-        context 'for Javascript strings with quotes' do
+        context 'for JavaScript strings with quotes' do
           let(:template) do <<-HAML.strip_heredoc
             :javascript
               var text = _('L\\'article');
