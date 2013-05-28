@@ -7,7 +7,7 @@ require 'rspec'
 $:.unshift File.dirname(__FILE__)
 $:.unshift File.join(File.dirname(__FILE__), '../lib')
 
-require 'action_controller'
+require 'active_support'
 require 'action_view'
 
 require 'haml/magic_translations'
