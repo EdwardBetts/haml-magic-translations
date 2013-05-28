@@ -24,19 +24,19 @@ module Haml
       context 'when using :i18n as backend' do
         before { Haml::MagicTranslations.enable :i18n }
         it { Haml::MagicTranslations.should be_enabled }
-        it { Haml::MagicTranslations::EngineMethods.
+        it { Haml::MagicTranslations::Compiler.
                  magic_translations_helpers.should == I18n::Gettext::Helpers }
       end
       context 'when using :gettext as backend' do
         before { Haml::MagicTranslations.enable :gettext }
         it { Haml::MagicTranslations.should be_enabled }
-        it { Haml::MagicTranslations::EngineMethods.
+        it { Haml::MagicTranslations::Compiler.
                magic_translations_helpers.should == GetText }
       end
       context 'when using :fast_gettext as backend' do
         before { Haml::MagicTranslations.enable :fast_gettext }
         it { Haml::MagicTranslations.should be_enabled }
-        it { Haml::MagicTranslations::EngineMethods.
+        it { Haml::MagicTranslations::Compiler.
                magic_translations_helpers.should == FastGettext::Translation }
       end
       context 'when giving another backend' do

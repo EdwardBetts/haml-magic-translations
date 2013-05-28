@@ -18,7 +18,8 @@ time with translations.
     gem.email = "jardiniers@potager.org"
     gem.homepage = "https://github.com/potager/haml-magic-translations"
     gem.authors = ["Kriss Kowalik", "potager.org"]
-    gem.add_dependency "haml", "~> 3.1"
+    gem.add_dependency "haml", "~> 4.0"
+    gem.add_development_dependency "haml-contrib", ">= 1.0"
     gem.add_development_dependency "actionpack"
     gem.add_development_dependency "gettext", ">= 2.3"
     gem.add_development_dependency "fast_gettext"

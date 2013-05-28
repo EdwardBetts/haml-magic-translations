@@ -18,24 +18,24 @@ module Haml::MagicTranslations::XGetText
 
     describe '.parse' do
       it 'should properly instanciate a Parser' do
-        HamlParser::Parser.should_receive(:new).with('test.haml').
-            and_return(mock('Parser').as_null_object)
+        HamlParser::XGetTextParser.should_receive(:new).with('test.haml').
+            and_return(mock('XGetTextParser').as_null_object)
         HamlParser.parse('test.haml')
       end
       it 'should run the parser' do
-        parser = mock('Parser')
+        parser = mock('XGetTextParser')
         parser.should_receive(:parse)
-        HamlParser::Parser.stub!(:new).and_return(parser)
+        HamlParser::XGetTextParser.stub!(:new).and_return(parser)
         HamlParser.parse('test.haml')
       end
     end
 
-    describe HamlParser::Parser do
+    describe HamlParser::XGetTextParser do
       describe '#initialize' do
         context 'when given "test.haml"' do
           before(:each) do
             File.stub!(:open).and_return(StringIO.new('It works!'))
-            @parser = HamlParser::Parser.new('test.haml')
+            @parser = HamlParser::XGetTextParser.new('test.haml')
           end
           it 'should set file attribute' do
             @parser.file.should == 'test.haml'
@@ -45,14 +45,14 @@ module Haml::MagicTranslations::XGetText
           end
         end
         context 'when given a IO-like object' do
-          let (:parser) { HamlParser::Parser.new(StringIO.new('It works!')) }
+          let (:parser) { HamlParser::XGetTextParser.new(StringIO.new('It works!')) }
           it { parser.file.should == '(haml)' }
           it { parser.content.should == 'It works!' }
         end
       end
 
       describe '#parse' do
-        subject { HamlParser::Parser.new(StringIO.new(template)).parse }
+        subject { HamlParser::XGetTextParser.new(StringIO.new(template)).parse }
         context 'for an empty content' do
           let(:template) { '' }
           it 'should return no targets' do
@@ -197,7 +197,7 @@ module Haml::MagicTranslations::XGetText
         end
         context 'after extracting translations' do
           it 'should still allow Haml::Engine to build templates' do
-            HamlParser::Parser.new(StringIO.new('test')).parse
+            HamlParser::XGetTextParser.new(StringIO.new('test')).parse
             Haml::Engine.new('%p It works!').render.should == <<-'HTML'.strip_heredoc
               <p>It works!</p>
             HTML

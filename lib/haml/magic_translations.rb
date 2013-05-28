@@ -43,9 +43,62 @@ require 'json'
 # 
 module Haml::MagicTranslations
   def self.included(haml) # :nodoc:
-    haml.send(:include, EngineMethods)
     if defined? Haml::Template
       Haml::Template.send(:extend, TemplateMethods)
+    end
+  end
+
+  class Parser < Haml::Parser
+    # Overriden function that parses Haml tags. Injects gettext call for all plain
+    # text lines.
+    def parse_tag(line)
+      tag_name, attributes, attributes_hashes, object_ref, nuke_outer_whitespace,
+        nuke_inner_whitespace, action, value, last_line = super(line)
+
+      if !value.empty?
+        unless action && action == '=' || action == '!' && value[0] == ?= || action == '&' && value[0] == ?=
+          value, interpolation_arguments = Haml::MagicTranslations.prepare_i18n_interpolation(value)
+          value = "\#{_('#{value.gsub(/'/, "\\\\'")}') % #{interpolation_arguments}\}\n"
+        end
+      end
+      [tag_name, attributes, attributes_hashes, object_ref, nuke_outer_whitespace,
+         nuke_inner_whitespace, action, value, last_line]
+    end
+
+    # Magical translations will be also used for plain text.
+    def plain(text, escape_html = nil)
+      value, interpolation_arguments = Haml::MagicTranslations.prepare_i18n_interpolation(text, escape_html)
+      value = "_('#{value.gsub(/'/, "\\\\'")}') % #{interpolation_arguments}\n"
+      script(value, !:escape_html)
+    end
+  end
+
+  class Compiler < Haml::Compiler
+    class << self
+      attr_accessor :magic_translations_helpers
+    end
+
+    def compile_filter
+      case @node.value[:name]
+        when 'markdown', 'maruku'
+          @node.value[:text] = "\#{_(<<-'END_OF_TRANSLATABLE_MARKDOWN'.rstrip
+#{@node.value[:text].rstrip.gsub(/\n/, '\n')}
+END_OF_TRANSLATABLE_MARKDOWN
+)}"
+        when 'javascript'
+          @node.value[:text].gsub!(/_\(('(([^']|\\')+)'|"(([^"]|\\")+)")\)/) do |m|
+            to_parse = $1[1..-2].gsub(/"/, '\"')
+            parsed_string = JSON.parse("[\"#{to_parse}\"]")[0]
+            parsed_string.gsub!(/'/, "\\\\'")
+            "\#{_('#{parsed_string}').to_json}"
+          end
+      end
+      super
+    end
+
+    def compile_root
+      @precompiled << "extend #{Compiler.magic_translations_helpers};"
+      super
     end
   end
 
@@ -72,13 +125,13 @@ module Haml::MagicTranslations
       gsub(/\"/, '\"').
       gsub(/\\/, '\\\\')
 
-    rest = Haml::Shared.handle_interpolation '"' + str + '"' do |scan|
+    rest = Haml::Util.handle_interpolation '"' + str + '"' do |scan|
       escapes = (scan[2].size - 1) / 2
       res << scan.matched[0...-3 - escapes]
       if escapes % 2 == 1
         res << '#{'
       else
-        content = eval('"' + Haml::Shared.balance(scan, ?{, ?}, 1)[0][0...-1] + '"')
+        content = eval('"' + Haml::Util.balance(scan, ?{, ?}, 1)[0][0...-1] + '"')
         content = "Haml::Helpers.html_escape(#{content.to_s})" if escape_html
         args << content
         res  << '%s'
@@ -103,102 +156,48 @@ module Haml::MagicTranslations
   # +:gettext+:: Use GetText from 'gettext'
   # +:fast_gettext+:: Use FastGettext::Translation from 'fast_gettext'
   def self.enable(backend = :i18n)
+    return if @enabled
+
     case backend
     when :i18n
       require 'i18n'
       require 'i18n/backend/gettext'
       require 'i18n/gettext/helpers'
       I18n::Backend::Simple.send(:include, I18n::Backend::Gettext)
-      EngineMethods.magic_translations_helpers = I18n::Gettext::Helpers
+      Compiler.magic_translations_helpers = I18n::Gettext::Helpers
     when :gettext
       require 'gettext'
-      EngineMethods.magic_translations_helpers = GetText
+      Compiler.magic_translations_helpers = GetText
     when :fast_gettext
       require 'fast_gettext'
-      EngineMethods.magic_translations_helpers = FastGettext::Translation
+      Compiler.magic_translations_helpers = FastGettext::Translation
     else
       @enabled = false
       raise ArgumentError, "Backend #{backend.to_s} is not available in Haml::MagicTranslations"
     end
+    @original_parser = Haml::Options.defaults[:parser_class]
+    Haml::Options.defaults[:parser_class] = Parser
+    @original_compiler = Haml::Options.defaults[:compiler_class]
+    Haml::Options.defaults[:compiler_class] = Compiler
     @enabled = true
   end
 
   # Disable magic translations
   def self.disable
-    EngineMethods.magic_translations_helpers = nil
+    return unless @enabled
+
     @enabled = false
+    Haml::Options.defaults[:compiler_class] = @original_compiler
+    @original_compiler = nil
+    Haml::Options.defaults[:parser_class] = @original_parser
+    @original_parser = nil
+    Compiler.magic_translations_helpers = nil
   end
 
   module TemplateMethods # :nodoc:all
     # backward compatibility with versions < 0.3
     def enable_magic_translations(backend = :i18n)
       Haml::MagicTranslations.enable backend
-    end
-  end
-
-  module EngineMethods # :nodoc:all
-    class << self
-      attr_accessor :magic_translations_helpers
-    end
-
-    def magic_translations?
-      return self.options[:magic_translations] unless self.options[:magic_translations].nil?
-
-      Haml::MagicTranslations.enabled?
-    end
-
-    # Overriden function that parses Haml tags. Injects gettext call for all plain
-    # text lines.
-    def parse_tag(line)
-      tag_name, attributes, attributes_hashes, object_ref, nuke_outer_whitespace,
-        nuke_inner_whitespace, action, value, last_line = super(line)
-
-      if magic_translations? && !value.empty?
-        unless action && action == '=' || action == '!' && value[0] == ?= || action == '&' && value[0] == ?=
-          value, interpolation_arguments = Haml::MagicTranslations.prepare_i18n_interpolation(value)
-          value = "\#{_('#{value.gsub(/'/, "\\\\'")}') % #{interpolation_arguments}\}\n"
-        end
-      end
-      [tag_name, attributes, attributes_hashes, object_ref, nuke_outer_whitespace,
-         nuke_inner_whitespace, action, value, last_line]
-    end
-
-    # Magical translations will be also used for plain text.
-    def plain(text, escape_html = nil)
-      if magic_translations?
-        value, interpolation_arguments = Haml::MagicTranslations.prepare_i18n_interpolation(text, escape_html)
-        value = "_('#{value.gsub(/'/, "\\\\'")}') % #{interpolation_arguments}\n"
-        script(value, !:escape_html)
-      else
-        super
-      end
-    end
-
-    def compile_filter
-      super unless magic_translations?
-
-      case @node.value[:name]
-        when 'markdown', 'maruku'
-          @node.value[:text] = "\#{_(<<-'END_OF_TRANSLATABLE_MARKDOWN'.rstrip
-#{@node.value[:text].rstrip.gsub(/\n/, '\n')}
-END_OF_TRANSLATABLE_MARKDOWN
-)}"
-        when 'javascript'
-          @node.value[:text].gsub!(/_\(('(([^']|\\')+)'|"(([^"]|\\")+)")\)/) do |m|
-            to_parse = $1[1..-2].gsub(/"/, '\"')
-            parsed_string = JSON.parse("[\"#{to_parse}\"]")[0]
-            parsed_string.gsub!(/'/, "\\\\'")
-            "\#{_('#{parsed_string}').to_json}"
-          end
-      end
-      super
-    end
-
-    def compile_root
-      if magic_translations?
-        @precompiled << "extend #{EngineMethods.magic_translations_helpers};"
-      end
-      super
     end
   end
 end

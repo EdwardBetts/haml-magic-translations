@@ -13,8 +13,8 @@ require 'action_view'
 require 'haml/magic_translations'
 require 'haml/template'
 
-Haml::Template.options[:ugly] = false
-Haml::Template.options[:format] = :xhtml
+Haml::Options.defaults[:ugly] = false
+Haml::Options.defaults[:format] = :xhtml
 
 def render(text, options = {}, &block)
   scope  = options.delete(:scope)  || Object.new
