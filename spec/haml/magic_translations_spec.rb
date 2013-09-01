@@ -229,7 +229,7 @@ module Haml
           end
           Haml::MagicTranslations.enable :gettext
           GetText.bindtextdomain 'test', :path => tmpdir
-          GetText.setlocale 'pl'
+          GetText.set_locale 'pl'
           example.run
         end
       end
