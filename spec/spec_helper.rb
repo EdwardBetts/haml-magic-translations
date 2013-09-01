@@ -11,7 +11,6 @@ require 'active_support'
 require 'action_view'
 
 require 'haml/magic_translations'
-require 'haml/template'
 
 Haml::Options.defaults[:ugly] = false
 Haml::Options.defaults[:format] = :xhtml
