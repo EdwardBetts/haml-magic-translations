@@ -34,7 +34,7 @@ Available backends are +:i18n+, +:gettext+ and +:fast_gettext+
 Now you have to add path to all your .po files with locales. Eg. for i18n backend
 it will be something like:
 
-  I18n.load_path += Dir["path/to/your/locales/*.{po}")]
+  I18n.load_path += Dir["path/to/your/locales/*.{po}"]
 
 And that's all. Now you can enjoy automatically translations in your .haml files!
 
