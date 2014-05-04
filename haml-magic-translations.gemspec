@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{haml-magic-translations}
-  s.version = "4.0.1"
+  s.version = "4.0.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kriss Kowalik", "potager.org"]
-  s.date = %q{2013-09-01}
+  s.date = %q{2014-05-04}
   s.description = %q{This plugin provides "magical translations" in your .haml files. What does it
 mean? It's mean that all your raw texts in templates will be automatically
 translated by GetText, FastGettext or Gettext backend from I18n. No more 
