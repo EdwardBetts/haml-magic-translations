@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{haml-magic-translations}
-  s.version = "4.0.2"
+  s.version = "4.0.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kriss Kowalik", "potager.org"]
-  s.date = %q{2014-05-04}
+  s.date = %q{2014-05-05}
   s.description = %q{This plugin provides "magical translations" in your .haml files. What does it
 mean? It's mean that all your raw texts in templates will be automatically
 translated by GetText, FastGettext or Gettext backend from I18n. No more 
@@ -56,7 +56,7 @@ time with translations.
       s.add_development_dependency(%q<actionpack>, [">= 0"])
       s.add_development_dependency(%q<gettext>, [">= 2.3"])
       s.add_development_dependency(%q<fast_gettext>, [">= 0"])
-      s.add_development_dependency(%q<rspec>, [">= 2"])
+      s.add_development_dependency(%q<rspec>, [">= 2.11"])
       s.add_development_dependency(%q<rdoc>, [">= 2.4.2"])
       s.add_development_dependency(%q<maruku>, [">= 0"])
     else
@@ -65,7 +65,7 @@ time with translations.
       s.add_dependency(%q<actionpack>, [">= 0"])
       s.add_dependency(%q<gettext>, [">= 2.3"])
       s.add_dependency(%q<fast_gettext>, [">= 0"])
-      s.add_dependency(%q<rspec>, [">= 2"])
+      s.add_dependency(%q<rspec>, [">= 2.11"])
       s.add_dependency(%q<rdoc>, [">= 2.4.2"])
       s.add_dependency(%q<maruku>, [">= 0"])
     end
@@ -75,7 +75,7 @@ time with translations.
     s.add_dependency(%q<actionpack>, [">= 0"])
     s.add_dependency(%q<gettext>, [">= 2.3"])
     s.add_dependency(%q<fast_gettext>, [">= 0"])
-    s.add_dependency(%q<rspec>, [">= 2"])
+    s.add_dependency(%q<rspec>, [">= 2.11"])
     s.add_dependency(%q<rdoc>, [">= 2.4.2"])
     s.add_dependency(%q<maruku>, [">= 0"])
   end
