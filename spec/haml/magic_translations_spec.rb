@@ -185,7 +185,7 @@ module Haml
 
       context 'when translating strings in Markdown' do
         it "should translate strings inside _('')" do
-          render(<<-'HAML'.strip_heredoc).should == <<-'HTML'.strip_heredoc
+          render(<<-'HAML'.strip_heredoc).lstrip.should == <<-'HTML'.strip_heredoc
             :maruku
               Now we will check multiline strings,
               which should be also translated.
