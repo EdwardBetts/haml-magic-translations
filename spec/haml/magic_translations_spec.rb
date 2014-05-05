@@ -210,6 +210,7 @@ module Haml
     context 'with I18n as backend' do
       before(:each) do
         Haml::MagicTranslations.enable :i18n
+        I18n.config.enforce_available_locales = false
         I18n.locale = :pl
         I18n.load_path += Dir[File.join(File.dirname(__FILE__), "../locales/*.po")]
       end
