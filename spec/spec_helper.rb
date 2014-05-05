@@ -12,6 +12,12 @@ require 'action_view'
 
 require 'haml/magic_translations'
 
+RSpec.configure do |config|
+  config.expect_with :rspec do |c|
+    c.syntax = :expect
+  end
+end
+
 Haml::Options.defaults[:ugly] = false
 Haml::Options.defaults[:format] = :xhtml
 

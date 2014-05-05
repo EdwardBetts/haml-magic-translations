@@ -23,21 +23,21 @@ module Haml
       after { Haml::MagicTranslations.disable }
       context 'when using :i18n as backend' do
         before { Haml::MagicTranslations.enable :i18n }
-        it { Haml::MagicTranslations.should be_enabled }
-        it { Haml::MagicTranslations::Compiler.
-                 magic_translations_helpers.should == I18n::Gettext::Helpers }
+        it { expect(Haml::MagicTranslations).to be_enabled }
+        it { expect(Haml::MagicTranslations::Compiler.
+                 magic_translations_helpers).to be == I18n::Gettext::Helpers }
       end
       context 'when using :gettext as backend' do
         before { Haml::MagicTranslations.enable :gettext }
-        it { Haml::MagicTranslations.should be_enabled }
-        it { Haml::MagicTranslations::Compiler.
-               magic_translations_helpers.should == GetText }
+        it { expect(Haml::MagicTranslations).to be_enabled }
+        it { expect(Haml::MagicTranslations::Compiler.
+               magic_translations_helpers).to be == GetText }
       end
       context 'when using :fast_gettext as backend' do
         before { Haml::MagicTranslations.enable :fast_gettext }
-        it { Haml::MagicTranslations.should be_enabled }
-        it { Haml::MagicTranslations::Compiler.
-               magic_translations_helpers.should == FastGettext::Translation }
+        it { expect(Haml::MagicTranslations).to be_enabled }
+        it { expect(Haml::MagicTranslations::Compiler.
+               magic_translations_helpers).to be == FastGettext::Translation }
       end
       context 'when giving another backend' do
         it 'should raise an error' do
@@ -45,20 +45,20 @@ module Haml
             Haml::MagicTranslations.enable :whatever
           }.to raise_error(ArgumentError)
         end
-        it { Haml::MagicTranslations.should_not be_enabled }
+        it { expect(Haml::MagicTranslations).to_not be_enabled }
       end
     end
 
     describe '.disable' do
       it 'should set Haml::MagicTranslations.enabled to false' do
         Haml::MagicTranslations.disable
-        Haml::MagicTranslations.should_not be_enabled
+        expect(Haml::MagicTranslations).to_not be_enabled
       end
     end
 
     shared_examples 'Haml magic translations' do
       it 'should translate text using existing locales' do
-        render(<<-'HAML'.strip_heredoc).should == <<-'HTML'.strip_heredoc
+        expect(render(<<-'HAML'.strip_heredoc)).to be == <<-'HTML'.strip_heredoc
           %p Magic translations works!
           %p Here with interpolation, and everything thanks to #{I18n.name} and #{GetText.name}
         HAML
@@ -68,7 +68,7 @@ module Haml
       end
 
       it 'should leave text without changes when translation is not available' do
-        render(<<-'HAML'.strip_heredoc).should == <<-'HTML'.strip_heredoc
+        expect(render(<<-'HAML'.strip_heredoc)).to be == <<-'HTML'.strip_heredoc
           %p Untranslated thanks to #{I18n.name} and #{GetText.name}
         HAML
           <p>Untranslated thanks to I18n and GetText</p>
@@ -76,7 +76,7 @@ module Haml
       end
 
       it 'should translate text with multiline plain text' do
-       render(<<-'HAML'.strip_heredoc).should == <<-'HTML'.strip_heredoc
+       expect(render(<<-'HAML'.strip_heredoc)).to be == <<-'HTML'.strip_heredoc
           %p Magic translations works!
           %p
             Now we will check multiline strings,
@@ -93,7 +93,7 @@ module Haml
       end
 
       it 'should translate escaped tags' do
-        render(<<-HAML.strip_heredoc).should == <<-HTML.strip_heredoc
+        expect(render(<<-HAML.strip_heredoc)).to be == <<-HTML.strip_heredoc
           %p& Magic translations works!
         HAML
           <p>Magiczne tłumaczenie działa!</p>
@@ -101,7 +101,7 @@ module Haml
       end
 
       it 'should translate unescaped tags' do
-        render(<<-HAML.strip_heredoc).should == <<-HTML.strip_heredoc
+        expect(render(<<-HAML.strip_heredoc)).to be == <<-HTML.strip_heredoc
           %p! Magic translations works!
         HAML
           <p>Magiczne tłumaczenie działa!</p>
@@ -109,7 +109,7 @@ module Haml
       end
 
       it 'should not translate evaluated tags' do
-        render(<<-HAML.strip_heredoc).should == <<-HTML.strip_heredoc
+        expect(render(<<-HAML.strip_heredoc)).to be == <<-HTML.strip_heredoc
           %p= 'Magic translations works!'
         HAML
           <p>Magic translations works!</p>
@@ -117,7 +117,7 @@ module Haml
       end
 
       it 'should not translate escaped evaluated tags' do
-        render(<<-HAML.strip_heredoc).should == <<-HTML.strip_heredoc
+        expect(render(<<-HAML.strip_heredoc)).to be == <<-HTML.strip_heredoc
           %p&= 'Magic translations works!'
         HAML
           <p>Magic translations works!</p>
@@ -125,7 +125,7 @@ module Haml
       end
 
       it 'should not translate unescaped evaluated tags' do
-        render(<<-HAML.strip_heredoc).should == <<-HTML.strip_heredoc
+        expect(render(<<-HAML.strip_heredoc)).to be == <<-HTML.strip_heredoc
           %p!= 'Magic translations works!'
         HAML
           <p>Magic translations works!</p>
@@ -134,7 +134,7 @@ module Haml
 
       context 'when translating strings in JavaScript' do
         it "should translate strings inside _('')" do
-          render(<<-'HAML'.strip_heredoc).translate_unicode.should == <<-'HTML'.strip_heredoc.translate_unicode
+          expect(render(<<-'HAML'.strip_heredoc).translate_unicode).to be == <<-'HTML'.strip_heredoc.translate_unicode
             :javascript
               var text = _('Magic translations works!');
           HAML
@@ -146,7 +146,7 @@ module Haml
           HTML
         end
         it 'should translate strings inside _("")' do
-          render(<<-'HAML'.strip_heredoc).translate_unicode.should == <<-'HTML'.strip_heredoc.translate_unicode
+          expect(render(<<-'HAML'.strip_heredoc).translate_unicode).to be == <<-'HTML'.strip_heredoc.translate_unicode
             :javascript
               var text = _("Magic translations works!");
           HAML
@@ -158,7 +158,7 @@ module Haml
           HTML
         end
         it 'should not choke on single-quote' do
-          render(<<-'HAML'.strip_heredoc).should == <<-'HTML'.strip_heredoc
+          expect(render(<<-'HAML'.strip_heredoc)).to be == <<-'HTML'.strip_heredoc
             :javascript
               var text = _("Don't you think?");
           HAML
@@ -170,7 +170,7 @@ module Haml
           HTML
         end
         it 'should not choke on double-quote' do
-          render(<<-'HAML'.strip_heredoc).should == <<-'HTML'.strip_heredoc
+          expect(render(<<-'HAML'.strip_heredoc)).to be == <<-'HTML'.strip_heredoc
             :javascript
               var text = _('One "quote" here');
           HAML
@@ -185,7 +185,7 @@ module Haml
 
       context 'when translating strings in Markdown' do
         it "should translate strings inside _('')" do
-          render(<<-'HAML'.strip_heredoc).lstrip.should == <<-'HTML'.strip_heredoc
+          expect(render(<<-'HAML'.strip_heredoc).lstrip).to be == <<-'HTML'.strip_heredoc
             :maruku
               Now we will check multiline strings,
               which should be also translated.
@@ -198,7 +198,7 @@ module Haml
       context 'when disabling magic translations' do
         it 'should leave text untranslated' do
           Haml::MagicTranslations.disable
-          render(<<-'HAML'.strip_heredoc).should == <<-'HTML'.strip_heredoc
+          expect(render(<<-'HAML'.strip_heredoc)).to be == <<-'HTML'.strip_heredoc
             %p Magic translations works!
           HAML
             <p>Magic translations works!</p>

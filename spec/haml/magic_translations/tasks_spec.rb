@@ -61,22 +61,22 @@ module Haml::MagicTranslations::Tasks
         task.app_version = 'test 1.0'
       end
       it 'should call update_pofiles' do
-        GetText.should_receive(:update_pofiles).with(
+        expect(GetText).to receive(:update_pofiles).with(
           task.text_domain, task.files, task.app_version, {})
         run
       end
       it 'should add a parser for ".haml" files to XGetText' do
-        GetText.stub!(:update_pofiles)
-        GetText::Tools::XGetText.should_receive(:add_parser) do |haml_parser|
-          haml_parser.should respond_to(:parse)
-          haml_parser.should be_a_target('example.haml')
+        allow(GetText).to receive(:update_pofiles)
+        expect(GetText::Tools::XGetText).to receive(:add_parser) do |haml_parser|
+          expect(haml_parser).to respond_to(:parse)
+          expect(haml_parser).to be_a_target('example.haml')
         end
         run
       end
       context 'with lang set' do
         it 'should pass lang in options' do
           task.lang = 'pl'
-          GetText.should_receive(:update_pofiles).with(
+          allow(GetText).to receive(:update_pofiles).with(
             task.text_domain, task.files, task.app_version,
             hash_including(:lang => task.lang))
           run
@@ -85,7 +85,7 @@ module Haml::MagicTranslations::Tasks
       context 'with po_root set' do
         it 'should pass po_root in options' do
           task.po_root = 'test/po'
-          GetText.should_receive(:update_pofiles).with(
+          expect(GetText).to receive(:update_pofiles).with(
             task.text_domain, task.files, task.app_version,
             hash_including(:po_root => task.po_root))
           run
@@ -94,7 +94,7 @@ module Haml::MagicTranslations::Tasks
       context 'with verbose set' do
         it 'should pass verbose in options' do
           task.verbose = true
-          GetText.should_receive(:update_pofiles).with(
+          expect(GetText).to receive(:update_pofiles).with(
             task.text_domain, task.files, task.app_version,
             hash_including(:verbose => task.verbose))
           run

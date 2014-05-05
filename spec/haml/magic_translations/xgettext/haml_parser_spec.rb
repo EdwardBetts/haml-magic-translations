@@ -18,14 +18,14 @@ module Haml::MagicTranslations::XGetText
 
     describe '.parse' do
       it 'should properly instanciate a Parser' do
-        HamlParser::XGetTextParser.should_receive(:new).with('test.haml').
-            and_return(mock('XGetTextParser').as_null_object)
+        expect(HamlParser::XGetTextParser).to receive(:new).with('test.haml').
+            and_return(double('XGetTextParser').as_null_object)
         HamlParser.parse('test.haml')
       end
       it 'should run the parser' do
-        parser = mock('XGetTextParser')
-        parser.should_receive(:parse)
-        HamlParser::XGetTextParser.stub!(:new).and_return(parser)
+        parser = double('XGetTextParser')
+        expect(parser).to receive(:parse)
+        allow(HamlParser::XGetTextParser).to receive(:new).and_return(parser)
         HamlParser.parse('test.haml')
       end
     end
@@ -34,20 +34,20 @@ module Haml::MagicTranslations::XGetText
       describe '#initialize' do
         context 'when given "test.haml"' do
           before(:each) do
-            File.stub!(:open).and_return(StringIO.new('It works!'))
+            allow(File).to receive(:open).and_return(StringIO.new('It works!'))
             @parser = HamlParser::XGetTextParser.new('test.haml')
           end
           it 'should set file attribute' do
-            @parser.file.should == 'test.haml'
+            expect(@parser.file).to be == 'test.haml'
           end
           it 'should put the file content in the content attribute' do
-            @parser.content.should == 'It works!'
+            expect(@parser.content).to be == 'It works!'
           end
         end
         context 'when given a IO-like object' do
           let (:parser) { HamlParser::XGetTextParser.new(StringIO.new('It works!')) }
-          it { parser.file.should == '(haml)' }
-          it { parser.content.should == 'It works!' }
+          it { expect(parser.file).to be == '(haml)' }
+          it { expect(parser.content).to be == 'It works!' }
         end
       end
 
@@ -143,7 +143,7 @@ module Haml::MagicTranslations::XGetText
             HAML
           end
           it 'should appear only once in the targets' do
-            subject.collect { |t| t[0] }.should have(1).item
+            expect(subject.collect { |t| t[0] }).to have(1).item
           end
           it 'should record two target locations' do
             should == [['Hello!', '(haml):1', '(haml):2']]
@@ -198,7 +198,7 @@ module Haml::MagicTranslations::XGetText
         context 'after extracting translations' do
           it 'should still allow Haml::Engine to build templates' do
             HamlParser::XGetTextParser.new(StringIO.new('test')).parse
-            Haml::Engine.new('%p It works!').render.should == <<-'HTML'.strip_heredoc
+            expect(Haml::Engine.new('%p It works!').render).to be == <<-'HTML'.strip_heredoc
               <p>It works!</p>
             HTML
           end
