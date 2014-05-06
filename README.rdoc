@@ -85,16 +85,18 @@ In order to extract translatable strings and merge with existing translation,
 this gem provides an Haml parser for GetText::Tools::XGetText. This requires
 gettext >= 2.3 to be available.
 
-You can either use it directly or through the provided Rake task. Here's an
-example on how to use the later:
+With gettext >= 3, Rake tasks can be defined as follow:
 
-  Haml::MagicTranslations::Tasks::UpdatePoFiles.new do |t|
-    t.text_domain = 'my_project'
-    t.files = Dir.glob("views/**/*.{rb,haml}") << "lib/my_project.rb"
-    t.app_version = 'my_project 0.1'
+  require 'gettext/tools/task'
+  require 'haml/magic_translations/xgettext/haml_parser'
+
+  GetText::Tools::XGetText.add_parser(Haml::MagicTranslations::XGetText::HamlParser)
+  GetText::Tools::Task.define do |task|
+    task.spec = Gem::Specification.load('coquelicot.gemspec')
+    task.files = Dir.glob('views/**/*.{rb,haml}') << 'lib/my_project.rb'
   end
 
-This will add a +update_pofiles+ task that will update PO files that can be
+This will add a +gettext:po:update+ task that will update PO files that can be
 found in the +po+ directory.
 
 === Copyrights
