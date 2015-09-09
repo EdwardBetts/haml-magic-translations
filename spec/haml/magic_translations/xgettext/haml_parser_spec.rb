@@ -143,7 +143,7 @@ module Haml::MagicTranslations::XGetText
             HAML
           end
           it 'should appear only once in the targets' do
-            expect(subject.collect { |t| t[0] }).to have(1).item
+            expect(subject.collect { |t| t[0] }.length).to eql 1
           end
           it 'should record two target locations' do
             should == [['Hello!', '(haml):1', '(haml):2']]
