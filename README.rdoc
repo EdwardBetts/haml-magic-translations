@@ -17,9 +17,9 @@ You can install haml-magic-translations directly from rubygems:
 
 ...or as Ruby on Rails plugin:
 
-  script/plugin install git://github.com/kriss/haml-magic-translations
+  script/plugin install https://github.com/potager/haml-magic-translations
 or
-  rails plugin install git://github.com/kriss/haml-magic-translations
+  rails plugin install https://github.com/potager/haml-magic-translations
 
 === Gettings started with Gettext
 
