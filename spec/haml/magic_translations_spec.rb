@@ -7,6 +7,12 @@ require 'gettext/tools'
 # Stolen from ActiveSupport. We have to cut and paste it here so it
 # does not turn the encoding back to US-ASCII. Strange issue.
 class String
+  unless String.method_defined? :try
+    def try(*args)
+      send(*args) if respond_to?(args.first)
+    end
+  end
+
   def strip_heredoc
     indent = scan(/^[ \t]*(?=\S)/).min.try(:size) || 0
     gsub(/^[ \t]{#{indent}}/, '')
