@@ -105,6 +105,11 @@ module Haml::MagicTranslations::XGetText # :nodoc:
       end
 
       def compile_silent_script
+        # Search for explicitely translated strings
+        @node.value[:text].gsub(/_\('(([^']|\\')+)'\)/) do |m|
+          parsed_string = "#{$1}"
+          HamlEngineCompiler.add_target(parsed_string, @node.line)
+        end
         yield if block_given?
       end
 

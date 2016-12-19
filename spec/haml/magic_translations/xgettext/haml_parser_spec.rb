@@ -130,6 +130,16 @@ module Haml::MagicTranslations::XGetText
             should == [['Hello!', '(haml):1']]
           end
         end
+        context 'for an explicit translation in an evaluated block' do
+          let(:template) do <<-HAML.strip_heredoc
+            - [_('Hello!')].each do |v|
+              %p= v
+            HAML
+          end
+          it 'should appear as a target' do
+            should == [["Hello!", "(haml):1"]]
+          end
+        end
         context 'for an explicit translation in an attribute' do
           let(:template) { "%input(type=submit){ value => _('Upload') }" }
           it 'should appear as a target' do
