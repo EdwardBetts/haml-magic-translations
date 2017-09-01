@@ -102,7 +102,7 @@ END_OF_TRANSLATABLE_MARKDOWN
     end
   end
 
-  # It discovers all fragments of code embeded in text and replacing with
+  # It discovers all fragments of code embedded in text and replacing with
   # simple string interpolation parameters.
   #
   # ==== Example:
